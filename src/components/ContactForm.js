@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import UsersConfig from "../userConfig/UsersConfig";
 
-const ContactForm = (props) => {
+const ContactForm = ({id,setUserId}) => {
   const initialFormValues = {
     firstName: "",
     lastName: "",
@@ -11,17 +12,31 @@ const ContactForm = (props) => {
   const [values, setValues] = useState(initialFormValues);
   const handleInputChange = (e) => {
     var { name, value } = e.target;
+    console.log(value)
     setValues({
       ...values,
       [name]: value,
     });
   };
-  const handleFormSubmit = (e) => {
+
+  const handleFormSubmit =async (e) => {
     e.preventDefault();
-    props.addOrEdit(values);
+    const newUser = {
+        ...values
+      };
+      console.log(newUser);
+
+      try {
+          await UsersConfig.addUser(newUser);
+        }
+      catch (err) {
+        
+      }
+  
+  
   };
   return (
-    <form>
+    <form onSubmit={handleFormSubmit} >
       <div class="row mb-4">
         <div class="col">
           <div class="form-outline">
