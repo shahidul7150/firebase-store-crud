@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import UsersConfig from "../userConfig/UsersConfig";
 
-const ContactForm = ({id,setUserId}) => {
+const ContactForm = ({ id, setUserId }) => {
+  console.log(id);
   const initialFormValues = {
     firstName: "",
     lastName: "",
@@ -12,31 +13,46 @@ const ContactForm = ({id,setUserId}) => {
   const [values, setValues] = useState(initialFormValues);
   const handleInputChange = (e) => {
     var { name, value } = e.target;
-    console.log(value)
+    console.log(value);
     setValues({
       ...values,
       [name]: value,
     });
   };
 
-  const handleFormSubmit =async (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     const newUser = {
-        ...values
-      };
-      console.log(newUser);
+      ...values,
+    };
+    console.log(newUser);
 
-      try {
-          await UsersConfig.addUser(newUser);
-        }
-      catch (err) {
-        
+    try {
+      if (id !== undefined && id !== "") {
+        await UsersConfig.updateUser(id, newUser);
+
+        setUserId("");
+      } else {
+        await UsersConfig.addUser(newUser);
       }
-  
-  
+    } catch (err) {}
   };
+
+  const editHandler = async (e) => {
+    try {
+      const docSnap = await UsersConfig.getUser(id);
+      setValues(docSnap.data());
+    } catch (err) {}
+  };
+
+  useEffect(() => {
+    // console.log("The id here is : ", id);
+    if (id !== undefined && id !== "") {
+      editHandler();
+    }
+  }, [id]);
   return (
-    <form onSubmit={handleFormSubmit} >
+    <form onSubmit={handleFormSubmit}>
       <div class="row mb-4">
         <div class="col">
           <div class="form-outline">
