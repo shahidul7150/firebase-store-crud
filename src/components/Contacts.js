@@ -12,10 +12,13 @@ const getUsers=async()=>{
     console.log(data.docs)
     setUsers(data.docs.map((doc)=>({...doc.data(),id:doc.id})))
 }
-
+const deletehandler=async(id)=>{
+    await UsersConfig.deleteUser(id);
+    getUsers()
+}
     return (
         <div>
-            <pre>{JSON.stringify(users,undefined,2)} </pre>
+            {/* <pre>{JSON.stringify(users,undefined,2)} </pre> */}
             <h1 className='text-center py-3 text-white mb-5 bg-secondary'>USER DETAILS CRUD OPERATION</h1>
             <div className='col-12 row ml-4 mr-4 p-5'>
             <div className='col-5'><ContactForm/></div>
@@ -46,7 +49,7 @@ const getUsers=async()=>{
       <td>{doc.address}</td>
       <td className='d-flex '>
         <button className='btn btn-success me-2' >Edit</button>
-        <button className='btn btn-danger' >DELETE</button>
+        <button className='btn btn-danger' onClick={(e)=>deletehandler(doc.id)}>DELETE</button>
       </td>
     </tr>
         )
